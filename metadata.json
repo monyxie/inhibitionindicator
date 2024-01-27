@@ -1,0 +1,8 @@
+{
+  "name": "Inhibition Indicator",
+  "description": "Indicates if there are active inhibitors",
+  "uuid": "inhibitionindicator@monyxie.github.io",
+  "shell-version": [
+    "45"
+  ]
+}
