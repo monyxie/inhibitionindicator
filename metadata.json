@@ -4,5 +4,6 @@
   "uuid": "inhibitionindicator@monyxie.github.io",
   "shell-version": [
     "45"
-  ]
+  ],
+  "gettext-domain": "inhibitionindicator@monyxie.github.io"
 }
