@@ -1,9 +1,10 @@
 {
-  "name": "Inhibition Indicator",
-  "description": "Adds indicator icon showing the current inhibition status, or put simply, whether any programs are preventing the system from going into sleep.",
-  "uuid": "inhibitionindicator@monyxie.github.io",
-  "shell-version": [
-    "45"
-  ],
-  "gettext-domain": "inhibitionindicator@monyxie.github.io"
+    "name": "Inhibition Indicator",
+    "description": "Adds indicator icon showing the current inhibition status, or put simply, whether any programs are preventing the system from going into sleep.",
+    "uuid": "inhibitionindicator@monyxie.github.io",
+    "shell-version": [
+        "45"
+    ],
+    "gettext-domain": "inhibitionindicator@monyxie.github.io",
+    "url": "https://github.com/monyxie/inhibitionindicator"
 }
