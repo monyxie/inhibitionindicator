@@ -17,24 +17,29 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-"use strict";
+'use strict';
 
-import GLib from "gi://GLib";
+import GLib from 'gi://GLib';
 
-import {addInhibitorChangeListener, getInhibitorAppId, getInhibitorIds, getInhibitorReason} from "./lib.js";
+import {
+    addInhibitorChangeListener,
+    getInhibitorAppId,
+    getInhibitorIds,
+    getInhibitorReason,
+} from './lib.js';
 
 const mainLoop = new GLib.MainLoop(null, false);
 
 function printInhibitors() {
     getInhibitorIds().then((objPaths) => {
-        console.log('Number of inhibitors: ' + objPaths.length)
+        console.log('Number of inhibitors: ' + objPaths.length);
         for (const objPath of objPaths) {
             Promise.all([
                 getInhibitorAppId(objPath),
                 getInhibitorReason(objPath),
             ]).then(([appId, reason]) => {
-                console.log(appId + ': ' + reason)
-            })
+                console.log(appId + ': ' + reason);
+            });
         }
     });
 }
@@ -43,6 +48,6 @@ printInhibitors();
 
 addInhibitorChangeListener(() => {
     printInhibitors();
-})
+});
 
 mainLoop.run();

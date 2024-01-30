@@ -15,12 +15,15 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-"use strict";
+'use strict';
 
 import GObject from 'gi://GObject';
 import St from 'gi://St';
 import Gio from 'gi://Gio';
-import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
+import {
+    Extension,
+    gettext as _,
+} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
@@ -29,18 +32,24 @@ import {
     clearInhibitorChangeListener,
     getInhibitorAppId,
     getInhibitorIds,
-    getInhibitorReason
-} from "./lib.js";
+    getInhibitorReason,
+} from './lib.js';
 
 const Indicator = GObject.registerClass(
     class Indicator extends PanelMenu.Button {
         _init(path) {
             super._init(0.0, _('Inhibition Indicator'));
-            this.path = path
-            this.icon = new St.Icon({style_class: 'system-status-icon'})
-            this._iconYes = Gio.icon_new_for_string(this.path + '/assets/zzz-yes.svg');
-            this._iconNo = Gio.icon_new_for_string(this.path + '/assets/zzz-no.svg');
-            this._iconUnknown = Gio.icon_new_for_string(this.path + '/assets/zzz-unknown.svg');
+            this.path = path;
+            this.icon = new St.Icon({ style_class: 'system-status-icon' });
+            this._iconYes = Gio.icon_new_for_string(
+                this.path + '/assets/zzz-yes.svg',
+            );
+            this._iconNo = Gio.icon_new_for_string(
+                this.path + '/assets/zzz-no.svg',
+            );
+            this._iconUnknown = Gio.icon_new_for_string(
+                this.path + '/assets/zzz-unknown.svg',
+            );
 
             this.icon.gicon = this._iconUnknown;
             this.add_child(this.icon);
@@ -51,7 +60,7 @@ const Indicator = GObject.registerClass(
         }
 
         clearInhibitors() {
-            this.menu.removeAll()
+            this.menu.removeAll();
         }
 
         addInhibitor(inhibitor) {
@@ -60,17 +69,17 @@ const Indicator = GObject.registerClass(
         }
 
         destroy() {
-            this.icon.destroy()
+            this.icon.destroy();
             this.icon = null;
-            this._iconYes.destroy()
-            this._iconYes = null
-            this._iconNo.destroy()
-            this._iconNo = null
-            this._iconUnknown.destroy()
-            this._iconUnknown = null
-            super.destroy()
+            this._iconYes.destroy();
+            this._iconYes = null;
+            this._iconNo.destroy();
+            this._iconNo = null;
+            this._iconUnknown.destroy();
+            this._iconUnknown = null;
+            super.destroy();
         }
-    }
+    },
 );
 
 export default class InhibitionIndicatorExtension extends Extension {
@@ -80,14 +89,13 @@ export default class InhibitionIndicatorExtension extends Extension {
 
         addInhibitorChangeListener(() => {
             this.updateInhibitors().catch((e) => {
-                console.error(e)
-            })
-        })
-
+                console.error(e);
+            });
+        });
 
         this.updateInhibitors().catch((e) => {
-            console.error(e)
-        })
+            console.error(e);
+        });
     }
 
     disable() {
@@ -103,10 +111,10 @@ export default class InhibitionIndicatorExtension extends Extension {
             if (!this._indicator) {
                 return;
             }
-            this._indicator.updateStatus(!!objPaths.length)
-            this._indicator.clearInhibitors()
+            this._indicator.updateStatus(!!objPaths.length);
+            this._indicator.clearInhibitors();
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
 
         for (const objPath of objPaths) {
@@ -116,9 +124,9 @@ export default class InhibitionIndicatorExtension extends Extension {
                 if (!this._indicator) {
                     return;
                 }
-                this._indicator.addInhibitor(appId + ': ' + reason)
+                this._indicator.addInhibitor(appId + ': ' + reason);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
         }
     }

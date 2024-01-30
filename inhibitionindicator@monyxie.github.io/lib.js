@@ -15,7 +15,7 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-"use strict";
+'use strict';
 
 import Gio from 'gi://Gio';
 
@@ -46,15 +46,15 @@ export function getInhibitorAppId(objectPath) {
             -1,
             null,
             (conn, res) => {
-                const data = conn.call_finish(res)
+                const data = conn.call_finish(res);
                 if (data) {
-                    resolve(data.get_child_value(0).get_string()[0])
+                    resolve(data.get_child_value(0).get_string()[0]);
                 } else {
-                    reject("D-Bus call failed")
+                    reject('D-Bus call failed');
                 }
-            }
+            },
         );
-    })
+    });
 }
 
 /**
@@ -73,17 +73,16 @@ export function getInhibitorReason(objectPath) {
             -1,
             null,
             (conn, res) => {
-                const data = conn.call_finish(res)
+                const data = conn.call_finish(res);
                 if (data) {
-                    resolve(data.get_child_value(0).get_string()[0])
+                    resolve(data.get_child_value(0).get_string()[0]);
                 } else {
-                    reject("D-Bus call failed")
+                    reject('D-Bus call failed');
                 }
-            }
+            },
         );
-    })
+    });
 }
-
 
 /**
  * @returns {Promise<string[]>}
@@ -102,30 +101,29 @@ export function getInhibitorIds() {
             null,
             (conn, res) => {
                 // data type string: (ao)
-                const data = conn.call_finish(res)
+                const data = conn.call_finish(res);
                 if (data) {
-                    resolve(data.get_child_value(0).get_objv())
+                    resolve(data.get_child_value(0).get_objv());
                 } else {
-                    reject("D-Bus call failed")
+                    reject('D-Bus call failed');
                 }
-            }
+            },
         );
-    })
+    });
 }
-
 
 /** @type {number|null} */
 let addedSubId = null;
 /** @type {number|null} */
 let removedSubId = null;
 /** @type {Array<() => void>} */
-const listeners = []
+const listeners = [];
 
 /**
  * @param callback () => void
  */
 export function addInhibitorChangeListener(callback) {
-    listeners.push(callback)
+    listeners.push(callback);
     if (!addedSubId) {
         addedSubId = getBus().signal_subscribe(
             'org.gnome.SessionManager',
@@ -136,9 +134,9 @@ export function addInhibitorChangeListener(callback) {
             null,
             () => {
                 for (const cb of listeners) {
-                    cb()
+                    cb();
                 }
-            }
+            },
         );
     }
     if (!removedSubId) {
@@ -151,21 +149,21 @@ export function addInhibitorChangeListener(callback) {
             null,
             () => {
                 for (const cb of listeners) {
-                    cb()
+                    cb();
                 }
-            }
+            },
         );
     }
 }
 
 export function clearInhibitorChangeListener() {
-    listeners.splice(0)
+    listeners.splice(0);
     if (addedSubId) {
-        getBus().signal_unsubscribe(addedSubId)
-        addedSubId = null
+        getBus().signal_unsubscribe(addedSubId);
+        addedSubId = null;
     }
     if (removedSubId) {
-        getBus().signal_unsubscribe(removedSubId)
-        removedSubId = null
+        getBus().signal_unsubscribe(removedSubId);
+        removedSubId = null;
     }
 }
