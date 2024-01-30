@@ -12,7 +12,14 @@ gjs -m src/cli.js
 
 After translatable strings are changed, regenerate the pot files:
 ```bash
-xgettext --from-code=UTF-8 --output=po/inhibitionindicator@monyxie.github.io.pot *.js
+xgettext --from-code=UTF-8 --output=src/po/inhibitionindicator@monyxie.github.io.pot src/*.js
+```
+
+Dev installation
+```bash
+mkdir -p ~/.local/share/gnome-shell/extensions
+ln -s "$(pwd)/inhibitionindicator@monyxie.github.io" ~/.local/share/gnome-shell/extensions
+# gnome-extensions enable inhibitionindicator@monyxie.github.io
 ```
 
 For now, only dev dependencies are defined in `package.json`, and there's no build step.
@@ -21,4 +28,3 @@ We don't want code of non-compatible licenses make it into the release.
 
 ## TODO
 - Create a build script
-- Use more expressive icons (bed?)
