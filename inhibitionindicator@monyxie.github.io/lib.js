@@ -19,15 +19,23 @@
 
 import Gio from 'gi://Gio';
 
-// Get the session D-Bus
-const bus = Gio.bus_get_sync(Gio.BusType.SESSION, null);
+/** @type {DBusConnection|null} */
+let bus;
+
+function getBus() {
+    if (!bus) {
+        // Get the session D-Bus
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, null);
+    }
+    return bus;
+}
 
 /**
  * @returns {Promise<string>}
  */
 export function getInhibitorAppId(objectPath) {
     return new Promise((resolve, reject) => {
-        bus.call(
+        getBus().call(
             'org.gnome.SessionManager',
             objectPath,
             'org.gnome.SessionManager.Inhibitor',
@@ -54,7 +62,7 @@ export function getInhibitorAppId(objectPath) {
  */
 export function getInhibitorReason(objectPath) {
     return new Promise((resolve, reject) => {
-        bus.call(
+        getBus().call(
             'org.gnome.SessionManager',
             objectPath,
             'org.gnome.SessionManager.Inhibitor',
@@ -82,7 +90,7 @@ export function getInhibitorReason(objectPath) {
  */
 export function getInhibitorIds() {
     return new Promise((resolve, reject) => {
-        bus.call(
+        getBus().call(
             'org.gnome.SessionManager',
             '/org/gnome/SessionManager',
             'org.gnome.SessionManager',
@@ -119,7 +127,7 @@ const listeners = []
 export function addInhibitorChangeListener(callback) {
     listeners.push(callback)
     if (!addedSubId) {
-        addedSubId = bus.signal_subscribe(
+        addedSubId = getBus().signal_subscribe(
             'org.gnome.SessionManager',
             'org.gnome.SessionManager',
             'InhibitorAdded',
@@ -134,7 +142,7 @@ export function addInhibitorChangeListener(callback) {
         );
     }
     if (!removedSubId) {
-        removedSubId = bus.signal_subscribe(
+        removedSubId = getBus().signal_subscribe(
             'org.gnome.SessionManager',
             'org.gnome.SessionManager',
             'InhibitorRemoved',
@@ -153,11 +161,11 @@ export function addInhibitorChangeListener(callback) {
 export function clearInhibitorChangeListener() {
     listeners.splice(0)
     if (addedSubId) {
-        bus.signal_unsubscribe(addedSubId)
+        getBus().signal_unsubscribe(addedSubId)
         addedSubId = null
     }
     if (removedSubId) {
-        bus.signal_unsubscribe(removedSubId)
+        getBus().signal_unsubscribe(removedSubId)
         removedSubId = null
     }
 }
