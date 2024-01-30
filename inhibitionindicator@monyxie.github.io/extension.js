@@ -37,7 +37,13 @@ const Indicator = GObject.registerClass(
         _init(path) {
             super._init(0.0, _('Inhibition Indicator'));
             this.path = path
-            this.initIcons()
+            this.icon = new St.Icon({style_class: 'system-status-icon'})
+            this._iconYes = Gio.icon_new_for_string(this.path + '/assets/zzz-yes.svg');
+            this._iconNo = Gio.icon_new_for_string(this.path + '/assets/zzz-no.svg');
+            this._iconUnknown = Gio.icon_new_for_string(this.path + '/assets/zzz-unknown.svg');
+
+            this.icon.gicon = this._iconUnknown;
+            this.add_child(this.icon);
         }
 
         updateStatus(isInhibited) {
@@ -53,14 +59,16 @@ const Indicator = GObject.registerClass(
             this.menu.addMenuItem(item);
         }
 
-        initIcons() {
-            this.icon = new St.Icon({style_class: 'system-status-icon'})
-            this._iconYes = Gio.icon_new_for_string(this.path + '/assets/zzz-yes.svg');
-            this._iconNo = Gio.icon_new_for_string(this.path + '/assets/zzz-no.svg');
-            this._iconUnknown = Gio.icon_new_for_string(this.path + '/assets/zzz-unknown.svg');
-
-            this.icon.gicon = this._iconUnknown;
-            this.add_child(this.icon);
+        destroy() {
+            this.icon.destroy()
+            this.icon = null;
+            this._iconYes.destroy()
+            this._iconYes = null
+            this._iconNo.destroy()
+            this._iconNo = null
+            this._iconUnknown.destroy()
+            this._iconUnknown = null
+            super.destroy()
         }
     }
 );
