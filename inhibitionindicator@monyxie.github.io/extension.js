@@ -19,6 +19,7 @@
 
 import GObject from 'gi://GObject';
 import St from 'gi://St';
+import Gio from 'gi://Gio';
 import {Extension, gettext as _} from 'resource:///org/gnome/shell/extensions/extension.js';
 import * as PanelMenu from 'resource:///org/gnome/shell/ui/panelMenu.js';
 import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
@@ -33,19 +34,14 @@ import {
 
 const Indicator = GObject.registerClass(
     class Indicator extends PanelMenu.Button {
-        _init() {
+        _init(path) {
             super._init(0.0, _('Inhibition Indicator'));
-
-            this.icon = new St.Icon({
-                icon_name: 'face-smile-big-symbolic',
-                style_class: 'system-status-icon',
-            });
-
-            this.add_child(this.icon);
+            this.path = path
+            this.initIcons()
         }
 
         updateStatus(isInhibited) {
-            this.icon.set_icon_name(isInhibited ? 'face-uncertain-symbolic' : 'face-smile-big-symbolic')
+            this.icon.gicon = isInhibited ? this._iconNo : this._iconYes;
         }
 
         clearInhibitors() {
@@ -54,38 +50,35 @@ const Indicator = GObject.registerClass(
 
         addInhibitor(inhibitor) {
             const item = new PopupMenu.PopupMenuItem(_(inhibitor));
-            // item.connect('activate', () => {
-            //     Main.notify(_('Whatʼs down, folks?'));
-            // });
             this.menu.addMenuItem(item);
+        }
+
+        initIcons() {
+            this.icon = new St.Icon({style_class: 'system-status-icon'})
+            this._iconYes = Gio.icon_new_for_string(this.path + '/assets/zzz-yes.svg');
+            this._iconNo = Gio.icon_new_for_string(this.path + '/assets/zzz-no.svg');
+            this._iconUnknown = Gio.icon_new_for_string(this.path + '/assets/zzz-unknown.svg');
+
+            this.icon.gicon = this._iconUnknown;
+            this.add_child(this.icon);
         }
     }
 );
 
 export default class InhibitionIndicatorExtension extends Extension {
     enable() {
-        this._indicator = new Indicator();
+        this._indicator = new Indicator(this.path);
         Main.panel.addToStatusArea(this.uuid, this._indicator);
 
         addInhibitorChangeListener(() => {
-            getInhibitorIds().then((objPaths) => {
-                if (!this._indicator) {
-                    return;
-                }
-                this._indicator.updateStatus(!!objPaths.length)
-                this._indicator.clearInhibitors()
-                for (const objPath of objPaths) {
-                    Promise.all([
-                        getInhibitorAppId(objPath),
-                        getInhibitorReason(objPath),
-                    ]).then(([appId, reason]) => {
-                        if (!this._indicator) {
-                            return;
-                        }
-                        this._indicator.addInhibitor(appId + ': ' + reason)
-                    })
-                }
-            });
+            this.updateInhibitors().catch((e) => {
+                console.error(e)
+            })
+        })
+
+
+        this.updateInhibitors().catch((e) => {
+            console.error(e)
         })
     }
 
@@ -93,5 +86,32 @@ export default class InhibitionIndicatorExtension extends Extension {
         clearInhibitorChangeListener();
         this._indicator.destroy();
         this._indicator = null;
+    }
+
+    async updateInhibitors() {
+        let objPaths;
+        try {
+            objPaths = await getInhibitorIds();
+            if (!this._indicator) {
+                return;
+            }
+            this._indicator.updateStatus(!!objPaths.length)
+            this._indicator.clearInhibitors()
+        } catch (e) {
+            console.error(e)
+        }
+
+        for (const objPath of objPaths) {
+            try {
+                const appId = await getInhibitorAppId(objPath);
+                const reason = await getInhibitorReason(objPath);
+                if (!this._indicator) {
+                    return;
+                }
+                this._indicator.addInhibitor(appId + ': ' + reason)
+            } catch (e) {
+                console.error(e)
+            }
+        }
     }
 }

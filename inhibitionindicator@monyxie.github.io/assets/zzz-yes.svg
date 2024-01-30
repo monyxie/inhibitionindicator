@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360px" height="360px" viewBox="0 0 360 360" version="1.2">
+<g id="surface41251">
+<path style="fill:none;stroke-width:30;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 40 40 L 120 40 L 40 120 L 120 120 "/>
+<path style="fill:none;stroke-width:30;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 40 160 L 120 160 L 40 240 L 120 240 "/>
+<path style="fill:none;stroke-width:30;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 160 40 L 240 40 L 160 120 L 240 120 "/>
+<path style="fill:none;stroke-width:60;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(100%,100%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M 180 260 L 240 320 L 320 180 "/>
+<path style="fill:none;stroke-width:40;stroke-linecap:round;stroke-linejoin:round;stroke:rgb(20%,60%,20%);stroke-opacity:1;stroke-miterlimit:10;" d="M 180 260 L 240 320 L 320 180 "/>
+</g>
+</svg>

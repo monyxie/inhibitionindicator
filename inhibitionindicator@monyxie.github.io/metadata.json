@@ -1,6 +1,6 @@
 {
   "name": "Inhibition Indicator",
-  "description": "Indicates if there are active inhibitors",
+  "description": "Inhibition Indicator is a Gnome Shell extension that shows the current inhibition status with a indicator icon.",
   "uuid": "inhibitionindicator@monyxie.github.io",
   "shell-version": [
     "45"

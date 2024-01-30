@@ -2,15 +2,18 @@
   "name": "inhibitorindicator",
   "version": "1.0.0",
   "description": "Inhibition Indicator ===",
-  "main": "src/cli.js",
+  "main": "inhibitionindicator@monyxie.github.io/cli.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint"
   },
   "keywords": [
-    "inhibitorindicator"
+    "inhibitorindicator",
+    "gnome",
+    "gnome-shell",
+    "gnome-shell-extension"
   ],
-  "author": "",
+  "author": "monyxie",
   "type": "module",
   "license": "GPL-2.0-or-later",
   "devDependencies": {
