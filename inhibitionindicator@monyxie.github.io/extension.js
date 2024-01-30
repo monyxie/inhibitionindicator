@@ -37,9 +37,10 @@ import {
 
 const Indicator = GObject.registerClass(
     class Indicator extends PanelMenu.Button {
-        _init(path) {
+        _init(extension) {
             super._init(0.0, _('Inhibition Indicator'));
-            this.path = path;
+            this.menuItems = [];
+            this.path = extension.path;
             this.icon = new St.Icon({ style_class: 'system-status-icon' });
             this._iconYes = Gio.icon_new_for_string(
                 this.path + '/assets/zzz-yes.svg',
@@ -61,21 +62,24 @@ const Indicator = GObject.registerClass(
 
         clearInhibitors() {
             this.menu.removeAll();
+            for (const i of this.menuItems) {
+                i.destroy();
+            }
+            this.menuItems = [];
         }
 
         addInhibitor(inhibitor) {
             const item = new PopupMenu.PopupMenuItem(_(inhibitor));
+            this.menuItems.push(item);
             this.menu.addMenuItem(item);
         }
 
         destroy() {
+            this.clearInhibitors();
             this.icon.destroy();
             this.icon = null;
-            this._iconYes.destroy();
             this._iconYes = null;
-            this._iconNo.destroy();
             this._iconNo = null;
-            this._iconUnknown.destroy();
             this._iconUnknown = null;
             super.destroy();
         }
@@ -84,7 +88,7 @@ const Indicator = GObject.registerClass(
 
 export default class InhibitionIndicatorExtension extends Extension {
     enable() {
-        this._indicator = new Indicator(this.path);
+        this._indicator = new Indicator(this);
         Main.panel.addToStatusArea(this.uuid, this._indicator);
 
         addInhibitorChangeListener(() => {
@@ -113,21 +117,22 @@ export default class InhibitionIndicatorExtension extends Extension {
             }
             this._indicator.updateStatus(!!objPaths.length);
             this._indicator.clearInhibitors();
+
+            const promises = objPaths.map((objPath) =>
+                Promise.all([
+                    getInhibitorAppId(objPath),
+                    getInhibitorReason(objPath),
+                ]),
+            );
+            const inhibitors = await Promise.all(promises);
+            if (!this._indicator) {
+                return;
+            }
+            for (const [appId, reason] of inhibitors) {
+                this._indicator.addInhibitor(appId + ': ' + reason);
+            }
         } catch (e) {
             console.error(e);
-        }
-
-        for (const objPath of objPaths) {
-            try {
-                const appId = await getInhibitorAppId(objPath);
-                const reason = await getInhibitorReason(objPath);
-                if (!this._indicator) {
-                    return;
-                }
-                this._indicator.addInhibitor(appId + ': ' + reason);
-            } catch (e) {
-                console.error(e);
-            }
         }
     }
 }

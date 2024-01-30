@@ -1,6 +1,6 @@
 {
   "name": "Inhibition Indicator",
-  "description": "Inhibition Indicator is a Gnome Shell extension that shows the current inhibition status with a indicator icon.",
+  "description": "Adds indicator icon showing the current inhibition status, or put simply, whether any programs are preventing the system from going into sleep.",
   "uuid": "inhibitionindicator@monyxie.github.io",
   "shell-version": [
     "45"
