@@ -15,7 +15,10 @@ After translatable strings are changed, regenerate the pot files:
 xgettext --from-code=UTF-8 --output=po/inhibitionindicator@monyxie.github.io.pot *.js
 ```
 
-Only dev dependencies are defined in `package.json` for now, and there's no build step.
+For now, only dev dependencies are defined in `package.json`, and there's no build step.
+This project is GPL so there's a restriction on the licenses of the dependencies.
+We don't want code of non-compatible licenses make it into the release.
 
 ## TODO
-Use more expressive icons (bed?)
+- Create a build script
+- Use more expressive icons (bed?)
