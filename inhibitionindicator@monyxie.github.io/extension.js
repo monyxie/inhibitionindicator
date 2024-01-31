@@ -69,7 +69,7 @@ const Indicator = GObject.registerClass(
         }
 
         addInhibitor(inhibitor) {
-            const item = new PopupMenu.PopupMenuItem(_(inhibitor));
+            const item = new PopupMenu.PopupMenuItem(inhibitor);
             this.menuItems.push(item);
             this.menu.addMenuItem(item);
         }
