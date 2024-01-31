@@ -3,6 +3,7 @@ import js from '@eslint/js';
 export default [
     js.configs.recommended,
     {
+        files: ['inhibitionindicator@monyxie.github.io/**/*.js'],
         languageOptions: {
             globals: {
                 ARGV: 'readonly',
