@@ -7,7 +7,7 @@ Inhibition Indicator is a Gnome Shell extension that shows the current inhibitio
 
 `cli.js` can be used for debugging some parts of the code (because debugging Gnome Extensions is PITA). Run `cli.js` with
 ```bash
-gjs -m inhibitionindicator@monyxie.github.io/cli.js
+gjs -m cli.js
 ```
 
 After translatable strings are changed, regenerate the pot files:

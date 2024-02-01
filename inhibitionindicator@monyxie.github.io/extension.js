@@ -29,6 +29,7 @@ import * as PopupMenu from 'resource:///org/gnome/shell/ui/popupMenu.js';
 import * as Main from 'resource:///org/gnome/shell/ui/main.js';
 import {
     addInhibitorChangeListener,
+    cleanUp,
     clearInhibitorChangeListener,
     getInhibitorAppId,
     getInhibitorIds,
@@ -104,6 +105,7 @@ export default class InhibitionIndicatorExtension extends Extension {
 
     disable() {
         clearInhibitorChangeListener();
+        cleanUp();
         this._indicator.destroy();
         this._indicator = null;
     }

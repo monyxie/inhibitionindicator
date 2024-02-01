@@ -167,3 +167,7 @@ export function clearInhibitorChangeListener() {
         removedSubId = null;
     }
 }
+
+export function cleanUp() {
+    bus = null;
+}

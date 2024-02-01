@@ -1,5 +1,3 @@
-#!/usr/bin/env gjs
-
 /*
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +24,7 @@ import {
     getInhibitorAppId,
     getInhibitorIds,
     getInhibitorReason,
-} from './lib.js';
+} from './inhibitionindicator@monyxie.github.io/lib.js';
 
 const mainLoop = new GLib.MainLoop(null, false);
 
