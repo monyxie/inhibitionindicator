@@ -156,7 +156,7 @@ export function addInhibitorChangeListener(callback) {
     }
 }
 
-export function clearInhibitorChangeListener() {
+function clearInhibitorChangeListener() {
     listeners.splice(0);
     if (addedSubId) {
         getBus().signal_unsubscribe(addedSubId);
@@ -169,5 +169,6 @@ export function clearInhibitorChangeListener() {
 }
 
 export function cleanUp() {
+    clearInhibitorChangeListener();
     bus = null;
 }
