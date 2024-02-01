@@ -26,5 +26,8 @@ For now, only dev dependencies are defined in `package.json`, and there's no bui
 This project is GPL so there's a restriction on the licenses of the dependencies.
 We don't want code of non-compatible licenses make it into the release.
 
+Read the [review guidelines](https://gjs.guide/extensions/review-guidelines/review-guidelines.html#general-guidelines)
+before submitting for review on [EGO](https://extensions.gnome.org/).
+
 ## TODO
 - Create a build script
