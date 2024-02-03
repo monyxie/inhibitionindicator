@@ -1,6 +1,6 @@
 {
     "name": "Inhibition Indicator",
-    "description": "Indicates whether the system is being prevented from going into sleep by programs.",
+    "description": "Indicates whether the system is prevented from sleeping by programs.",
     "uuid": "inhibitionindicator@monyxie.github.io",
     "shell-version": [
         "45"
