@@ -88,8 +88,24 @@ const Indicator = GObject.registerClass(
 
 export default class InhibitionIndicatorExtension extends Extension {
     enable() {
-        this._indicator = new Indicator(this);
-        Main.panel.addToStatusArea(this.uuid, this._indicator);
+        this.createIndicator();
+        this._hideIndicatorWhenNotInhibited = false;
+        this._settings = this.getSettings();
+
+        this._settings.connect(
+            'changed::hide-indicator-when-not-inhibited',
+            (settings, key) => {
+                this._hideIndicatorWhenNotInhibited =
+                    settings.get_value(key)?.get_boolean() || false;
+                this.updateInhibitors().catch((e) => {
+                    console.error(e);
+                });
+            },
+        );
+
+        this._hideIndicatorWhenNotInhibited = this._settings.get_boolean(
+            'hide-indicator-when-not-inhibited',
+        );
 
         addInhibitorChangeListener(() => {
             this.updateInhibitors().catch((e) => {
@@ -102,34 +118,58 @@ export default class InhibitionIndicatorExtension extends Extension {
         });
     }
 
+    createIndicator() {
+        if (!this._indicator) {
+            this._indicator = new Indicator(this);
+            Main.panel.addToStatusArea(this.uuid, this._indicator);
+        }
+    }
+
     disable() {
         cleanUp();
-        this._indicator.destroy();
-        this._indicator = null;
+        this.destroyIndicator();
+        this._settings = null;
+    }
+
+    destroyIndicator() {
+        if (this._indicator) {
+            this._indicator.destroy();
+            this._indicator = null;
+        }
     }
 
     async updateInhibitors() {
         let objPaths;
         try {
             objPaths = await getInhibitorIds();
+            const inhibited = !!objPaths.length;
+            if (!inhibited && this._hideIndicatorWhenNotInhibited) {
+                this.destroyIndicator();
+            } else {
+                this.createIndicator();
+            }
+
             if (!this._indicator) {
                 return;
             }
-            this._indicator.updateStatus(!!objPaths.length);
+
+            this._indicator.updateStatus(inhibited);
             this._indicator.clearInhibitors();
 
-            const promises = objPaths.map((objPath) =>
-                Promise.all([
-                    getInhibitorAppId(objPath),
-                    getInhibitorReason(objPath),
-                ]),
-            );
-            const inhibitors = await Promise.all(promises);
-            if (!this._indicator) {
-                return;
-            }
-            for (const [appId, reason] of inhibitors) {
-                this._indicator.addInhibitor(appId + ': ' + reason);
+            if (inhibited) {
+                const promises = objPaths.map((objPath) =>
+                    Promise.all([
+                        getInhibitorAppId(objPath),
+                        getInhibitorReason(objPath),
+                    ]),
+                );
+                const inhibitors = await Promise.all(promises);
+                if (!this._indicator) {
+                    return;
+                }
+                for (const [appId, reason] of inhibitors) {
+                    this._indicator.addInhibitor(appId + ': ' + reason);
+                }
             }
         } catch (e) {
             console.error(e);

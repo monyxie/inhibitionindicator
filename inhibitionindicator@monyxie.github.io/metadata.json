@@ -6,5 +6,6 @@
         "45"
     ],
     "gettext-domain": "inhibitionindicator@monyxie.github.io",
-    "url": "https://github.com/monyxie/inhibitionindicator"
+    "url": "https://github.com/monyxie/inhibitionindicator",
+    "settings-schema": "org.gnome.shell.extensions.inhibitionindicator"
 }
