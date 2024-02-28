@@ -3,6 +3,8 @@ Inhibition Indicator
 
 Inhibition Indicator is a Gnome Shell extension that shows the current inhibition status with a indicator icon.
 
+![Screenshot showing Inhibition Indicator in action](screenshot.png)
+
 ## Development
 
 Dev installation
