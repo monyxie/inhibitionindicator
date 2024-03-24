@@ -3,7 +3,8 @@
     "description": "Indicates whether the system is prevented from sleeping by programs.",
     "uuid": "inhibitionindicator@monyxie.github.io",
     "shell-version": [
-        "45"
+        "45",
+        "46"
     ],
     "gettext-domain": "inhibitionindicator@monyxie.github.io",
     "url": "https://github.com/monyxie/inhibitionindicator",
