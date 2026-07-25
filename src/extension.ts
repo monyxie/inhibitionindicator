@@ -136,6 +136,7 @@ class Indicator extends PanelMenu.Button {
 export default class InhibitionIndicatorExtension extends Extension {
     protected _settings: Gio.Settings | null = null;
     protected _indicator: Indicator | null = null;
+    protected _updateGeneration: number = 0;
 
     get settings() {
         return this._settings;
@@ -211,32 +212,36 @@ export default class InhibitionIndicatorExtension extends Extension {
     }
 
     async updateInhibitors() {
-        let objPaths;
+        const generation = ++this._updateGeneration;
+        
         try {
-            objPaths = await getInhibitorIds();
-            const inhibited = !!objPaths.length;
+            const objPaths = await getInhibitorIds();
+            
+            const promises = objPaths.map((objPath) =>
+                Promise.all([
+                    getInhibitorAppId(objPath),
+                    getInhibitorReason(objPath),
+                ]),
+            );
+            const settled = await Promise.allSettled(promises);
+            const inhibitors = settled
+                .filter(
+                    (r): r is PromiseFulfilledResult<[string, string]> =>
+                        r.status === "fulfilled",
+                )
+                .map((r) => r.value);
+            const inhibited = !!inhibitors.length;
 
-            if (!this._indicator) {
+            // No awaits past this point.
+            if (!this._indicator || generation !== this._updateGeneration) {
                 return;
             }
 
             this._indicator.updateStatus(inhibited);
             this._indicator.clearInhibitors();
-
-            if (inhibited) {
-                const promises = objPaths.map((objPath) =>
-                    Promise.all([
-                        getInhibitorAppId(objPath),
-                        getInhibitorReason(objPath),
-                    ]),
-                );
-                const inhibitors = await Promise.all(promises);
-                if (!this._indicator) {
-                    return;
-                }
-                for (const [appId, reason] of inhibitors) {
-                    this._indicator.addInhibitor(appId + ": " + reason);
-                }
+            
+            for (const [appId, reason] of inhibitors) {
+                this._indicator.addInhibitor(appId + ": " + reason);
             }
         } catch (e) {
             console.error(e);
